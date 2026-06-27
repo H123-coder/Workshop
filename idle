@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Workshop Idle</title>
+<title>Precision Engineering</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@400;600;700;900&display=swap');
 
@@ -298,6 +298,148 @@ body {
 .upg-btn:hover { background: rgba(240,165,0,0.1); }
 .upg-btn:disabled { border-color: var(--border); color: var(--muted); cursor: not-allowed; background: transparent; }
 
+/* Prestige */
+.prestige-bar {
+  background: var(--panel);
+  border: 1px solid #4a2a6a;
+  border-radius: 4px;
+  padding: 14px 18px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+.prestige-bar.visible { display: flex; }
+
+.prestige-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prestige-title {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #b07ae0;
+}
+
+.prestige-tokens {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 18px;
+  color: #d4a0ff;
+}
+
+.prestige-info {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.prestige-progress-wrap {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.prestige-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #7a3fb0, #c060ff);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.prestige-btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 10px;
+  border-radius: 3px;
+  border: 1px solid #c060ff;
+  color: #c060ff;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.1s;
+}
+.prestige-btn:hover { background: rgba(192,96,255,0.12); }
+.prestige-btn:disabled { border-color: var(--border); color: var(--muted); cursor: not-allowed; }
+
+.prestige-mult {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: #d4a0ff;
+  text-align: center;
+}
+
+/* Confirm overlay */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  display: none;
+}
+.confirm-overlay.show { display: flex; }
+.confirm-box {
+  background: var(--panel);
+  border: 1px solid #c060ff;
+  border-radius: 6px;
+  padding: 24px 20px;
+  max-width: 320px;
+  width: 90%;
+  text-align: center;
+}
+.confirm-box h2 {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 16px;
+  color: #d4a0ff;
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+}
+.confirm-box p {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+.confirm-box .reward {
+  font-size: 22px;
+  color: #d4a0ff;
+  margin-bottom: 18px;
+  display: block;
+}
+.confirm-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.confirm-yes {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 10px;
+  border: 1px solid #c060ff;
+  color: #c060ff;
+  background: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.confirm-yes:hover { background: rgba(192,96,255,0.15); }
+.confirm-no {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
 /* Stats */
 .stats-bar {
   background: var(--panel);
@@ -349,7 +491,7 @@ body {
 </head>
 <body>
 
-<div class="title">⚙ ENTEC WORKSHOP</div>
+<div class="title">⚙ PRECISION ENGINEERING</div>
 <div class="subtitle">IDLE FABRICATION SIM</div>
 
 <div class="game">
@@ -364,6 +506,20 @@ body {
       <div><span id="per-sec">$0.00</span>/sec</div>
       <div style="margin-top:3px">Total earned: <span id="total-earned" style="color:var(--muted)">$0</span></div>
     </div>
+  </div>
+
+  <!-- Prestige -->
+  <div class="prestige-bar" id="prestige-bar">
+    <div class="prestige-top">
+      <div class="prestige-title">⬡ PRESTIGE</div>
+      <div class="prestige-tokens">🔮 <span id="prestige-tokens">0</span> tokens</div>
+    </div>
+    <div class="prestige-info" id="prestige-info"></div>
+    <div class="prestige-progress-wrap">
+      <div class="prestige-progress" id="prestige-prog"></div>
+    </div>
+    <div class="prestige-mult" id="prestige-mult"></div>
+    <button class="prestige-btn" id="prestige-btn">⬡ PRESTIGE NOW</button>
   </div>
 
   <!-- Click -->
@@ -402,7 +558,18 @@ body {
 
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- Prestige confirm -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <h2>PRESTIGE?</h2>
+    <p>You'll lose all machines, money and upgrades.<br>But you keep your tokens — forever.</p>
+    <span class="reward" id="confirm-reward"></span>
+    <div class="confirm-btns">
+      <button class="confirm-yes" id="confirm-yes">✓ PRESTIGE</button>
+      <button class="confirm-no" id="confirm-no">✗ CANCEL</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ── Game Data ──────────────────────────────────────────────────────────────
@@ -433,13 +600,16 @@ const UPGRADES = [
 let G = {
   money: 0,
   totalEarned: 0,
+  lifetimeEarned: 0,   // never resets
   partsClicked: 0,
   clickMult: 1,
   allMult: 1,
-  machMults: {},   // per-machine multipliers
-  machines: {},    // { id: count }
-  progress: {},    // { id: 0..1 }
-  upgrades: {},    // { id: bought }
+  machMults: {},
+  machines: {},
+  progress: {},
+  upgrades: {},
+  prestigeTokens: 0,
+  prestigeCount: 0,
   lastTick: Date.now(),
 };
 
@@ -531,6 +701,7 @@ function tick() {
       const earned = machinePerSec(m) * m.time;
       G.money += earned;
       G.totalEarned += earned;
+      G.lifetimeEarned += earned;
       G.progress[m.id] = 0;
     }
     const bar = document.getElementById('prog-' + m.id);
@@ -540,6 +711,7 @@ function tick() {
   renderMoney();
   updateBuyButtons();
   checkUpgradeAvailability();
+  renderPrestige();
 }
 
 // ── Milestones ─────────────────────────────────────────────────────────────
@@ -667,12 +839,73 @@ function fmtInt(n) {
   return Math.floor(n);
 }
 
+// ── Prestige ───────────────────────────────────────────────────────────────
+
+function prestigeTarget() {
+  // Each prestige the threshold grows: $500K, $2M, $8M ...
+  return 500000 * Math.pow(4, G.prestigeCount);
+}
+
+function tokensForReset() {
+  // Tokens = floor(sqrt(totalEarned / 50000)), minimum 1
+  return Math.max(1, Math.floor(Math.sqrt(G.totalEarned / 50000)));
+}
+
+function prestigeMult() {
+  // Each token gives +50% bonus, stacks multiplicatively: 1.5^tokens
+  return Math.pow(1.5, G.prestigeTokens);
+}
+
+function renderPrestige() {
+  const target = prestigeTarget();
+  const pct = Math.min(1, G.totalEarned / target);
+  const ready = G.totalEarned >= target;
+  const tokens = tokensForReset();
+  const bar = document.getElementById('prestige-bar');
+  const mult = prestigeMult();
+
+  bar.classList.toggle('visible', G.prestigeTokens > 0 || G.totalEarned >= target * 0.1);
+
+  document.getElementById('prestige-tokens').textContent = G.prestigeTokens;
+  document.getElementById('prestige-prog').style.width = (pct * 100) + '%';
+  document.getElementById('prestige-info').textContent =
+    ready
+      ? '✓ READY — Prestige for +' + tokens + ' token' + (tokens > 1 ? 's' : '')
+      : fmt(G.totalEarned) + ' / ' + fmt(target) + ' earned this run';
+  document.getElementById('prestige-mult').textContent =
+    G.prestigeTokens > 0 ? '🔮 Current bonus: ×' + mult.toFixed(2) + ' all earnings' : '';
+  document.getElementById('prestige-btn').disabled = !ready;
+}
+
+function doPrestige() {
+  const tokens = tokensForReset();
+  G.prestigeTokens += tokens;
+  G.prestigeCount++;
+
+  // Reset run state
+  G.money = 0;
+  G.totalEarned = 0;
+  G.partsClicked = 0;
+  G.clickMult = 1;
+  G.allMult = prestigeMult(); // prestige bonus baked in as base allMult
+  G.upgrades = {};
+  MACHINES.forEach(m => { G.machines[m.id] = 0; G.progress[m.id] = 0; G.machMults[m.id] = 1; });
+
+  renderMachines();
+  renderUpgrades();
+  renderMoney();
+  renderPrestige();
+  renderStats();
+  showToast('🔮 PRESTIGE ' + G.prestigeCount + ' — ×' + prestigeMult().toFixed(2) + ' bonus active!');
+}
+
 // ── Init ───────────────────────────────────────────────────────────────────
 
 function doClick(x, y) {
   const val = clickValue();
   G.money += val;
   G.totalEarned += val;
+  G.lifetimeEarned += val;
   G.partsClicked++;
   spawnFloat(x, y, '+' + fmt(val));
   renderMoney();
@@ -692,7 +925,34 @@ clickBtn.addEventListener('click', function(e) {
   doClick(e.clientX, e.clientY);
 });
 
-// Event delegation for machine buy buttons
+// Prestige button
+document.getElementById('prestige-btn').addEventListener('click', () => {
+  document.getElementById('confirm-reward').textContent = '+' + tokensForReset() + ' 🔮 token' + (tokensForReset() > 1 ? 's' : '');
+  document.getElementById('confirm-overlay').classList.add('show');
+});
+document.getElementById('prestige-btn').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  document.getElementById('confirm-reward').textContent = '+' + tokensForReset() + ' 🔮 token' + (tokensForReset() > 1 ? 's' : '');
+  document.getElementById('confirm-overlay').classList.add('show');
+}, { passive: false });
+
+document.getElementById('confirm-yes').addEventListener('click', () => {
+  document.getElementById('confirm-overlay').classList.remove('show');
+  doPrestige();
+});
+document.getElementById('confirm-yes').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  document.getElementById('confirm-overlay').classList.remove('show');
+  doPrestige();
+}, { passive: false });
+
+document.getElementById('confirm-no').addEventListener('click', () => {
+  document.getElementById('confirm-overlay').classList.remove('show');
+});
+document.getElementById('confirm-no').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  document.getElementById('confirm-overlay').classList.remove('show');
+}, { passive: false });
 document.getElementById('machines-list').addEventListener('click', function(e) {
   const btn = e.target.closest('[data-buy]');
   if (btn && !btn.disabled) buyMachine(btn.dataset.buy);
@@ -715,6 +975,7 @@ document.getElementById('upgrades-list').addEventListener('touchend', function(e
 renderMachines();
 renderUpgrades();
 renderMoney();
+renderPrestige();
 renderStats();
 
 setInterval(() => {
